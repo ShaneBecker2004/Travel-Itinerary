@@ -13,7 +13,7 @@
         <div class="nav-links">
             <a class="active" href="index.html">Home</a>
             <a href="explore.html">Explore</a>
-            <a href="searchpage.html">Search</a>
+            <a href="information.html">About</a>
             <div class="dropdown">
                 <button class="dropbtn">Other <i class="fa fa-caret-down"></i></button>
                 <div class="dropdown-content">
@@ -46,7 +46,6 @@
         </select>
     </div>
 
-    <!-- Fixed container ID -->
     <div id="explore-container" class="card-container"></div>
 
     <script>
@@ -54,7 +53,7 @@
 
     async function loadAttractions() {
         try {
-            const res = await fetch("/api/attractions");
+            const res = await fetch("attractions.json");
             attractions = await res.json();
 
             renderAttractions(attractions);

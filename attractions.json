@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Fushimi Inari Shrine",
+    "description": "Famous shrine with thousands of red torii gates.",
+    "category": "Attraction",
+    "city": "Kyoto"
+  },
+  {
+    "name": "Shibuya Crossing",
+    "description": "One of the busiest pedestrian crossings in the world.",
+    "category": "Attraction",
+    "city": "Tokyo"
+  },
+  {
+    "name": "Ichiran Ramen",
+    "description": "Popular ramen restaurant known for tonkotsu broth.",
+    "category": "Restaurant",
+    "city": "Tokyo"
+  },
+  {
+    "name": "Dotonbori Street Food",
+    "description": "Famous Osaka street food district.",
+    "category": "Restaurant",
+    "city": "Osaka"
+  },
+  {
+    "name": "Sapporo Snow Festival",
+    "description": "Winter festival with giant snow sculptures.",
+    "category": "Attraction",
+    "city": "Hokkaido"
+  },
+  {
+    "name": "Yokohama Strawberry Festival",
+    "description": "Strawberry Festival with many food stalls of various strawberry dishes.",
+    "category": "Event",
+    "city": "Yokohama"
+  }
+]
