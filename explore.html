@@ -1,159 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">    
-
-    <head>
-        <title>Nippon Navigator</title>
-        <link rel="stylesheet" href="frontend/style.css">
-    </head>
-    <body>        
-        <nav class="navbar">
-            <a href="index.html" class="logo">
-                <img src="images/Flag_of_Japan.svg.png" alt="Nippon Navigator">
-            </a>
-
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nippon Navigator</title>
+    <link rel="stylesheet" href="frontend/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <img src="images/Flag_of_Japan.svg.png" alt="Nippon Navigator">
+        </a>
         <div class="nav-links">
-                <a class="active" href="index.html">Home</a>
-                <a href="explore.html">Explore</a>
-                <a href="searchpage.html">Search</a>
+            <a class="active" href="index.html">Home</a>
+            <a href="explore.html">Explore</a>
+            <a href="searchpage.html">Search</a>
             <div class="dropdown">
-                <button class="dropbtn">Other
-                <i class="fa fa-caret-down"></i>
-                </button>
-            <div class="dropdown-content">
-                <a href="map.html">Map</a>
-                <a href="exchangerate.html">Exchange Rates</a>
-                <a href="japan-immigration.html">Japan Immigration</a>
+                <button class="dropbtn">Other <i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="map.html">Map</a>
+                    <a href="exchangerate.html">Exchange Rates</a>
+                    <a href="japan-immigration.html">Japan Immigration</a>
+                </div>
             </div>
-            </div>
-                <a href="index.html">Create Plan</a>
-                
+            <a href="index.html">Create Plan</a>
             <div class="searchbar">
                 <input type="text" placeholder="Search Here..." name="search">
-                <button type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
+                <button type="submit"><i class="fa fa-search"></i></button>
             </div>
-                <a class="account" href="index.html" >Account</a>
+            <a class="account" href="index.html">Account</a>
         </div>
-        </nav>
-        
-        <main>
-            <h1>Explore The World of Japan</h1>
-            <p>Discover what calls to you across Japan:</p>
-        </main>
+    </nav>
 
-        <div class="filter-container">
+    <main>
+        <h1>Explore The World of Japan</h1>
+        <p>Discover what calls to you across Japan:</p>
+    </main>
 
-    <label for="categoryFilter">Filter by Type:</label>
-
-    <select id="categoryFilter">
-    <option value="all">All</option>
-    <option value="Attraction">Attractions</option>
-    <option value="Restaurant">Restaurants</option>
-    <option value="Event">Events</option>
-    </select>
-
+    <div class="filter-container">
+        <label for="categoryFilter">Filter by Type:</label>
+        <select id="categoryFilter">
+            <option value="all">All</option>
+            <option value="Attraction">Attractions</option>
+            <option value="Restaurant">Restaurants</option>
+            <option value="Event">Events</option>
+        </select>
     </div>
 
+    <!-- Fixed container ID -->
     <div id="explore-container"></div>
-   
-    <script>
 
+    <script>
     let attractions = [];
 
-    function renderAttractions(list) {
+    async function loadAttractions() {
+        try {
+            const res = await fetch("/api/attractions");
+            attractions = await res.json();
 
-        const container = document.getElementById("cityContainer");
+            renderAttractions(attractions);
+        } catch (err) {
+            console.error("Error loading attractions:", err);
+        }
+    }
+
+    function renderAttractions(list) {
+        const container = document.getElementById("explore-container");
         container.innerHTML = "";
 
         list.forEach(item => {
-
             const card = document.createElement("div");
             card.className = "card";
 
             card.innerHTML = `
-            <div class="container">
-                <h3>${item.name}</h3>
-                <p>${item.description}</p>
-                <p><strong>Location:</strong> ${item.location}</p>
-                <p><strong>Type:</strong> ${item.category}</p>
-            </div>
+                <img src="frontend/img_avatar.png" alt="${item.name}" style="width:100%">
+                <div class="container">
+                    <h4><b>${item.name}</b></h4>
+                    <p>${item.category} in ${item.city}</p>
+                    <p>${item.description || ""}</p>
+                    <p><strong>Location:</strong> ${item.location || ""}</p>
+                </div>
             `;
 
             container.appendChild(card);
-
         });
     }
 
-    fetch("/api/attractions")
-    .then(res => res.json())
-    .then(data => {
-        attractions = data;
-        renderAttractions(attractions);
-    });
-
-    document.getElementById("categoryFilter").addEventListener("change", function(){
-
+    // Filter functionality
+    document.getElementById("categoryFilter").addEventListener("change", function() {
         const category = this.value;
-
-        if(category === "all"){
+        if (category === "all") {
             renderAttractions(attractions);
-            return;
+        } else {
+            const filtered = attractions.filter(a => a.category === category);
+            renderAttractions(filtered);
         }
-
-        const filtered = attractions.filter(a => a.category === category);
-
-        renderAttractions(filtered);
-
     });
-
-    </script>
-
-
-    </body>   
-
-    <script>
-
-    async function loadAttractions() {
-
-        try {
-
-            const response = await fetch("/api/attractions");
-            const attractions = await response.json();
-
-            const container = document.getElementById("explore-container");
-
-            container.innerHTML = "";
-
-            attractions.forEach(attraction => {
-
-                const card = document.createElement("div");
-                card.className = "card";
-
-                card.innerHTML = `
-                    <img src="img_avatar.png" alt="${attraction.name}" style="width:100%">
-                    <div class="container">
-                        <h4><b>${attraction.name}</b></h4>
-                        <p>${attraction.category} in ${attraction.city}</p>
-                    </div>
-                `;
-
-                container.appendChild(card);
-
-            });
-
-        } catch (error) {
-
-            console.error("Error loading attractions:", error);
-
-        }
-
-    }
 
     loadAttractions();
-
     </script>
-        <footer class="footer">
-            Test
-        </footer>
+
+    <footer class="footer">Test</footer>
+</body>
 </html>
