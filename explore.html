@@ -39,61 +39,120 @@
         
         <main>
             <h1>Explore The World of Japan</h1>
-            <p>Choose a city to get started:</p>
+            <p>Discover what calls to you across Japan:</p>
         </main>
 
-        <div class="card">
-            <img src="img_avatar.png" alt="Tokyo" style="width:100%">
-                <div class="container">
-                    <h4><b>Tokyo</b></h4>
-                    <p>Things to do in Tokyo</p>
-            </div>
-        </div>
+        <div class="filter-container">
 
-        <div class="card">
-            <img src="img_avatar.png" alt="Osaka" style="width:100%">
-                <div class="container">
-                    <h4><b>Osaka</b></h4>
-                    <p>Things to do in Osaka</p>
-            </div>
-        </div>
+    <label for="categoryFilter">Filter by Type:</label>
 
-        <div class="card">
-            <img src="img_avatar.png" alt="Kyoto" style="width:100%">
-                <div class="container">
-                    <h4><b>Kyoto</b></h4>
-                    <p>Things to do in Kyoto</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <img src="img_avatar.png" alt="Hokkaido" style="width:100%">
-                <div class="container">
-                    <h4><b>Hokkaido</b></h4>
-                    <p>Things to do in Hokkaido</p>
-            </div>
-        </div>
+    <select id="categoryFilter">
+    <option value="all">All</option>
+    <option value="Attraction">Attractions</option>
+    <option value="Restaurant">Restaurants</option>
+    <option value="Event">Events</option>
+    </select>
 
     </div>
+
+    <div id="explore-container"></div>
    
-    <script src="backend/server.js"></script>
+    <script>
 
-    <script>const express = require("express");
-    const app = express();
-    const port = 3000;
+    let attractions = [];
 
-    const citiesRoute = require("./routes/cities");
+    function renderAttractions(list) {
 
-    app.use(express.json());
-    app.use("/api", citiesRoute);
+        const container = document.getElementById("cityContainer");
+        container.innerHTML = "";
 
-    app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+        list.forEach(item => {
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+            <div class="container">
+                <h3>${item.name}</h3>
+                <p>${item.description}</p>
+                <p><strong>Location:</strong> ${item.location}</p>
+                <p><strong>Type:</strong> ${item.category}</p>
+            </div>
+            `;
+
+            container.appendChild(card);
+
+        });
+    }
+
+    fetch("/api/attractions")
+    .then(res => res.json())
+    .then(data => {
+        attractions = data;
+        renderAttractions(attractions);
     });
+
+    document.getElementById("categoryFilter").addEventListener("change", function(){
+
+        const category = this.value;
+
+        if(category === "all"){
+            renderAttractions(attractions);
+            return;
+        }
+
+        const filtered = attractions.filter(a => a.category === category);
+
+        renderAttractions(filtered);
+
+    });
+
     </script>
 
 
-    </body>        
+    </body>   
+
+    <script>
+
+    async function loadAttractions() {
+
+        try {
+
+            const response = await fetch("/api/attractions");
+            const attractions = await response.json();
+
+            const container = document.getElementById("explore-container");
+
+            container.innerHTML = "";
+
+            attractions.forEach(attraction => {
+
+                const card = document.createElement("div");
+                card.className = "card";
+
+                card.innerHTML = `
+                    <img src="img_avatar.png" alt="${attraction.name}" style="width:100%">
+                    <div class="container">
+                        <h4><b>${attraction.name}</b></h4>
+                        <p>${attraction.category} in ${attraction.city}</p>
+                    </div>
+                `;
+
+                container.appendChild(card);
+
+            });
+
+        } catch (error) {
+
+            console.error("Error loading attractions:", error);
+
+        }
+
+    }
+
+    loadAttractions();
+
+    </script>
         <footer class="footer">
             Test
         </footer>
